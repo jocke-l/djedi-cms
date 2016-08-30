@@ -25,7 +25,7 @@ else:
     TemplateResponse = BaseTemplateResponse
 
 
-def generic_tag_compiler(parser, token, params, varargs, varkw, defaults,
+def _generic_tag_compiler(parser, token, params, varargs, varkw, defaults,
                          name, takes_context, node_class):
     """
     Returns a template.Node subclass.
@@ -34,3 +34,9 @@ def generic_tag_compiler(parser, token, params, varargs, varkw, defaults,
     args, kwargs = parse_bits(parser, bits, params, varargs, varkw,
                               defaults, takes_context, name)
     return node_class(takes_context, args, kwargs)
+
+
+if django.VERSION < (1, 9):
+    from django.template.base import generic_tag_compiler
+else:
+    generic_tag_compiler = _generic_tag_compiler
