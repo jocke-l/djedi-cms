@@ -6,7 +6,6 @@ import django
 from contextlib import contextmanager
 
 from django.conf import settings
-from django.contrib.auth.models import User, Group
 from django.test import Client
 from django.test import TransactionTestCase
 
@@ -96,10 +95,12 @@ class AssertionMixin(object):
 class UserMixin(object):
 
     def create_djedi_master(self):
+        from django.contrib.auth.models import User
         user = User.objects.create_superuser('master', 'master@djedi.io', 'test')
         return user
 
     def create_djedi_apprentice(self):
+        from django.contrib.auth.models import User, Group
         user = User.objects.create_user('apprentice', email='apprentice@djedi.io', password='test')
         group, _ = Group.objects.get_or_create(name='Djedi')
         user.is_staff = True

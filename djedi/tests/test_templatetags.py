@@ -1,5 +1,4 @@
 import cio
-from django.contrib.auth.models import User
 from django.template import Context, TemplateSyntaxError
 from cio.backends import cache
 from cio.pipeline import pipeline
@@ -72,6 +71,7 @@ class TagTest(DjediTest, AssertionMixin):
         assert html == u''
 
     def test_blocknode_with_context(self):
+        from django.contrib.auth.models import User
         cio.set('i18n://sv-se@page/title.txt', u'Hej {name}!')
 
         source = u"""
@@ -123,6 +123,7 @@ class TagTest(DjediTest, AssertionMixin):
         assert html == u'foo'
 
     def test_djedi_admin_tag(self):
+        from django.contrib.auth.models import User
         source = u"""
             {% load djedi_admin %}
             {% djedi_admin %}
