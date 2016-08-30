@@ -5,6 +5,10 @@ from functools import partial
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse as BaseTemplateResponse
+if django.VERSION < (1, 9):
+    from django.template.base import parse_bits
+else:
+    from django.template.library import parse_bits
 
 __all__ = ['render_to_string', 'render']
 
@@ -19,3 +23,20 @@ if django.VERSION >= (1, 8):
             super(TemplateResponse, self).__init__(*args, **kwargs)
 else:
     TemplateResponse = BaseTemplateResponse
+
+
+def _generic_tag_compiler(parser, token, params, varargs, varkw, defaults,
+                         name, takes_context, node_class):
+    """
+    Returns a template.Node subclass.
+    """
+    bits = token.split_contents()[1:]
+    args, kwargs = parse_bits(parser, bits, params, varargs, varkw,
+                              defaults, takes_context, name)
+    return node_class(takes_context, args, kwargs)
+
+
+if django.VERSION < (1, 9):
+    from django.template.base import generic_tag_compiler
+else:
+    generic_tag_compiler = _generic_tag_compiler
